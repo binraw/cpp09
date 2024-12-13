@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     std::map<std::string, int>::iterator it;
     for (it = myMap.begin();it != myMap.end(); it++)
     {
-        std::cout << it->first << std::endl;
+        std::cout << it->first << "value : " << it->second << std::endl;
     }
     std::string line_file;
     std::ifstream file_input(argv[1]);
@@ -57,16 +57,19 @@ int main(int argc, char **argv)
         if (std::getline(ssf, key_file, '|') && std::getline(ssf, valueFile))
         {
             int nb_btc;
-            it_find = myMap.find(key_file);
-            std::cout << it_find->first << std::endl; 
-            if (it_find != myMap.end()) //find la value correspondante a la date
-            {
+            // if (it_find != myMap.end()) //find la value correspondante a la date
+            // {
+                
+            /* std::cout << it_find->first << std::endl;  */
+                it_find = myMap.find(key_file); 
                 std::stringstream(valueFile) >> nb_btc;
-                nb_btc = it_find->second * nb_btc;
+                nb_btc = it_find->second;
+                
                 std::cout << "Valeur fin : " << nb_btc << std::endl;
-            }
-            else
-                std::cout << "rien trouver avec : " << key_file << std::endl;
+                nb_btc = 0;
+            // }
+            // else
+                /* std::cout << "rien trouver avec : " << key_file << std::endl; */
         }
     }
     file.close(); 
