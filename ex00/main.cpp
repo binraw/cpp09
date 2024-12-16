@@ -109,10 +109,6 @@ int main(int argc, char **argv)
                 int value_btc = it_find->second;
                 std::cout << key_file << " => " << nb_btc * value_btc << std::endl;
             } 
-            else 
-            {
-                std::cout << "Clé non trouvée : " << key_file << std::endl;
-            }
         }
     }
     file.close(); 
