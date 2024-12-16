@@ -91,7 +91,7 @@ int main(int argc, char **argv)
         std::map<std::string, int>::iterator it_find;
         if (std::getline(ssf, key_file, '|') && std::getline(ssf, valueFile))
         {
-            int nb_btc = 0;
+            float nb_btc = 0;
             std::stringstream(valueFile) >> nb_btc;
             key_file = trim(key_file);
             std::map<std::string, int>::iterator it_find = myMap.lower_bound(key_file);
