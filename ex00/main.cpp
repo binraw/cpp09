@@ -1,10 +1,50 @@
 #include "BitcoinExchange.hpp"
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <vector>
 #include <map>
 #include <sstream>
 #include <string>
+
+
+std::string trim(const std::string& str) 
+{
+    size_t first = str.find_first_not_of(' ');
+    size_t last = str.find_last_not_of(' ');
+    return (first == std::string::npos) ? "" : str.substr(first, last - first + 1); 
+}
+
+bool is_valid_date(std::string &date)
+{
+    int year;
+    int month;
+    int day;
+
+    if (date.length() != 10 || date[4] != '-' || date[7] != '-')
+        return false;
+    year = std::atoi(date.substr(0, 4).c_str());
+    month = std::atoi(date.substr(5, 2).c_str());
+    day = std::atoi(date.substr(8, 2).c_str());
+    if (year > 2025)
+        return false;
+    if (month > 12 || month < 1)
+        return false;
+    if (day > 31 || day < 1)
+        return false;
+    if (month == 2)
+    {
+        if (day > 29)
+            return false;
+    }
+    if (month == 4 || month == 6 || month == 9 || month == 11)
+    {
+        if (day > 30)
+            return false;
+    }
+    return true;
+}
+
 
 int main(int argc, char **argv)
 {
@@ -15,7 +55,7 @@ int main(int argc, char **argv)
 	    std::cerr << "Error: could not open file." << std::endl;
         return 1;
     }
-    std::map<std::string, int> myMap; // Déclaration de la map
+    std::map<std::string, int> myMap;
     std::ifstream file("data.csv");
     if (!file.is_open()) 
     {
@@ -36,11 +76,6 @@ int main(int argc, char **argv)
             myMap[key] = value;
         }
     }
-    std::map<std::string, int>::iterator it;
-    for (it = myMap.begin();it != myMap.end(); it++)
-    {
-        std::cout << it->first << "value : " << it->second << std::endl;
-    }
     std::string line_file;
     std::ifstream file_input(argv[1]);
     if (!file_input.is_open()) 
@@ -56,20 +91,28 @@ int main(int argc, char **argv)
         std::map<std::string, int>::iterator it_find;
         if (std::getline(ssf, key_file, '|') && std::getline(ssf, valueFile))
         {
-            int nb_btc;
-            // if (it_find != myMap.end()) //find la value correspondante a la date
-            // {
-                
-            /* std::cout << it_find->first << std::endl;  */
-                it_find = myMap.find(key_file); 
-                std::stringstream(valueFile) >> nb_btc;
-                nb_btc = it_find->second;
-                
-                std::cout << "Valeur fin : " << nb_btc << std::endl;
-                nb_btc = 0;
-            // }
-            // else
-                /* std::cout << "rien trouver avec : " << key_file << std::endl; */
+            int nb_btc = 0;
+            std::stringstream(valueFile) >> nb_btc;
+            key_file = trim(key_file);
+            std::map<std::string, int>::iterator it_find = myMap.lower_bound(key_file);
+            if (is_valid_date(key_file) == 0)
+                std::cout << "Error : Bad input => " << key_file << std::endl;
+            else if (nb_btc < 0 || nb_btc > 1000)
+            {
+                if (nb_btc > 1000)
+                    std::cout << "Error : too large a number." << std::endl;
+                else
+                    std::cout << "Error : not a positive number." << std::endl;
+            }
+            else if (it_find != myMap.end())
+            {
+                int value_btc = it_find->second;
+                std::cout << key_file << " => " << nb_btc * value_btc << std::endl;
+            } 
+            else 
+            {
+                std::cout << "Clé non trouvée : " << key_file << std::endl;
+            }
         }
     }
     file.close(); 
@@ -78,26 +121,4 @@ int main(int argc, char **argv)
 }
 
 
-// je prends chaque ligne de mon fichier et je l'envoie dasn une fonction et je regarde si elle est trouver dans ma map 
-// our ca je pense faire une boucle sur la focntion et envoyer a chaque fois la ligne suivante du fichier dnner en argv
-// et std::cout le resultat de la recherche
-// void print_result(std::map<std::string, int> map, std::string lign)
-// {
-//     
-//
-// }
 
-// int copy_file(std::string filename, std::vector<typename T>)
-// {
-// 	if (!filename.is_open())
-// 	{
-// 		std::cerr << "Could not open the file: " << filename << std::endl;
-// 		return (-1);
-// 	}
-// 	string str;
-// 	while (getline(filename, str))
-// 	{
-// 		T.push_back(str);
-// 	}
-// 	filename.close();
-// } 
