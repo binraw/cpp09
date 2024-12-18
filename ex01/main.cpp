@@ -1,16 +1,20 @@
 
-
 #include <stack>
+#include "RPN.hpp"
+
 int main(int argc, char **argv)
 {
-	// std::stack<int> rpn;
-	//
-	// for (int i = 0; i < argc; i++)
-	// {
-	// 	if (argv[i] != '+' && argv[i] != '/' && argv[i] != '-' && argv[i] != '*')
-	//  		rpn.push(argv[i]);
-	//
-	// }
+	RPN test;
+	std::string words;
 
+	for (int i = 1; i < argc; i++)
+	{
+		words  += argv[i];
+		if (i < argc - 1)
+			words += " ";
+	}
+	std::cout << "words : " << words << std::endl;
+test.calcul(words);
 
+	return (0);
 }  

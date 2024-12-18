@@ -1,4 +1,4 @@
-NAME = btc
+NAME = RPN
 
 
 SRCS_FILE =  main.cpp RPN.cpp

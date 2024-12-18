@@ -1,29 +1,36 @@
 #include "RPN.hpp"
 #include <stack>
-#include <strstream>
-
+#include <string>
+#include <sstream>
+#include <iostream>
  
 RPN::RPN()
 {
 }
-RPN::RPN(std::string &str)
+RPN::RPN(std::string &)
+{
+}
+RPN::RPN(const RPN &)
 {}
-RPN::RPN(const RPN &other)
-{}
-RPN &RPN::operator=(const RPN &other)
-{}
+RPN &RPN::operator=(const RPN &)
+{
+	return *this;
+}
 RPN::~RPN()
 {}
 void RPN::calcul(std::string &str)
 {
-	std::istrstream iss(str);
+	std::istringstream iss(str);
 	std::string token;
 
 	while (iss >> token)
 	{
+
 		if (isNumber(token))
 		{
-			int number = std::stoi(token);
+			std::istringstream iss(token);
+			int number;
+			iss >> number;
 			if (number > 10)
 			{
 				std::cout << "Error : too large a number." << std::endl;
@@ -33,6 +40,12 @@ void RPN::calcul(std::string &str)
 		}
 		else
 		{
+			if (_rpn.size() < 2)
+			{
+				std::cout << "Error : not enough values in the stack." << std::endl;
+				return ;
+			}
+
 			int nu2 = _rpn.top();
 			_rpn.pop();
 			int nu = _rpn.top();
@@ -45,7 +58,19 @@ void RPN::calcul(std::string &str)
 			else if (token == "-")
 				result = nu - nu2;
 			else if (token == "/")
+			{
+				if (nu2 == 0)
+				{
+					std::cout << "Error : divion by zero" << std::endl;
+					return ;
+				}
 				result = nu / nu2;
+			}
+			else
+			{
+				std::cout << "Error : invalid operator" << std::endl;
+				return ;
+			}
 			_rpn.push(result);
 		}
 	}
@@ -54,10 +79,11 @@ void RPN::calcul(std::string &str)
 
 bool isNumber(std::string &str)
 {
-	if (!str.empty())
+	if (str.empty())
 		return false;
-	for (char c : str)
+	for (size_t i = 0; i < str.size(); i++)
 	{
+		char c = str[i];
 		if (c < '0' || c > '9')
 			return false;
 	}
