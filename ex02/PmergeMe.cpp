@@ -45,20 +45,20 @@ void PmergeMe::controlValue(char *value)
         result = std::atoi(value);
     }
     catch (std::invalid_argument const& ex){
-        throw ;
+        throw ErrorArgs();
     }
     catch (std::out_of_range const& ex){
-        throw ;
+        throw ErrorRange();
     }
     if (result)
     {
         if (std::find(_containerDequePair.begin(), _containerDequePair.end(), result) == _containerDequePair.end())
            return;
         else
-            throw ; //doublon
+            throw ErrorDouble(); //doublon
     }
     else
-        throw ; // no value
+        throw ErrorNull(); // no value
 }
 
 void PmergeMe::createDoublon(int argc, char **argv)
@@ -148,4 +148,24 @@ void PmergeMe::recursiveSort(std::deque<int>& arr)
     {
         arr[k++] = right[j++];
     }
+}
+
+const char* PmergeMe::ErrorArgs::what() const  throw()
+{
+    return "Invalid Arguments.";
+}
+
+const char* PmergeMe::ErrorDouble::what() const  throw()
+{
+    return "Double values.";
+}
+
+const char* PmergeMe::ErrorNull::what() const  throw()
+{
+    return "NULL arguments.";
+}
+
+const char* PmergeMe::ErrorRange::what() const  throw()
+{
+    return "Out of range value.";
 }

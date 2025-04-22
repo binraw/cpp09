@@ -35,7 +35,19 @@ public:
 	void createDoublon(int argc, char **argv);
 	void createlargestContainer();
 	void recursiveSort(std::deque<int>& arr);
-    class Error: public std::exception
+    class ErrorArgs: public std::exception
+    {
+        virtual const char* what() const throw();
+    };
+	class ErrorRange: public std::exception
+    {
+        virtual const char* what() const throw();
+    };
+	class ErrorDouble: public std::exception
+    {
+        virtual const char* what() const throw();
+    };
+	class ErrorNull: public std::exception
     {
         virtual const char* what() const throw();
     };
