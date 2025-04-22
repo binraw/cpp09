@@ -33,6 +33,8 @@ public:
 	~PmergeMe();
 	void controlValue(char *value);
 	void createDoublon(int argc, char **argv);
+	void createlargestContainer();
+	void recursiveSort(std::deque<int>& arr);
     class Error: public std::exception
     {
         virtual const char* what() const throw();
@@ -41,6 +43,7 @@ public:
 private:
 	std::deque<std::pair<int, int>> _containerDequePair;
 	std::deque<int> _containerDequeLong;
+	std::deque<int> _containerDequeShort;
 };
 
 bool isNumber(std::string &str);
