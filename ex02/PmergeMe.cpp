@@ -111,7 +111,6 @@ void PmergeMe::createlargestContainer()
 }
 
 
-
 void PmergeMe::recursiveSort(std::deque<int>& arr) 
 {
     if (arr.size() <= 1) 
@@ -147,6 +146,37 @@ void PmergeMe::recursiveSort(std::deque<int>& arr)
     while (j < right.size()) 
     {
         arr[k++] = right[j++];
+    }
+}
+
+void PmergeMe::reorderContainerPair()
+{
+    std::deque<std::pair<int, int>> reorderContainer;
+    for (std::deque<int>::iterator it = _containerDequeLong.begin(); it != _containerDequeLong.end(); it++)
+    {
+        for (std::deque<std::pair<int, int>>::iterator iter = _containerDequePair.begin(); iter != _containerDequePair.end(); iter++)
+        {
+            if (*it == iter->second)
+            {
+                reorderContainer.push_back(*iter);
+                break;
+            }
+        }
+    }
+    _containerDequePair = reorderContainer;
+}
+
+/*
+    
+
+*/
+
+
+void PmergeMe::preorderContainerShort()
+{
+    for (std::deque<std::pair<int, int>>::iterator it = _containerDequePair.begin(); it != _containerDequePair.end(); it++)
+    {
+        _containerDequeShortPreorder.push_back(it->first);
     }
 }
 

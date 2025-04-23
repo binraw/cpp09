@@ -35,6 +35,8 @@ public:
 	void createDoublon(int argc, char **argv);
 	void createlargestContainer();
 	void recursiveSort(std::deque<int>& arr);
+	void reorderContainerPair();
+	void preorderContainerShort();
     class ErrorArgs: public std::exception
     {
         virtual const char* what() const throw();
@@ -56,6 +58,7 @@ private:
 	std::deque<std::pair<int, int>> _containerDequePair;
 	std::deque<int> _containerDequeLong;
 	std::deque<int> _containerDequeShort;
+	std::deque<int> _containerDequeShortPreorder;
 };
 
 bool isNumber(std::string &str);
