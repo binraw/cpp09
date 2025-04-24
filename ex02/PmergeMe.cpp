@@ -5,19 +5,25 @@ PmergeMe::PmergeMe()
 
 }
 
-PmergeMe::PmergeMe(char **argv)
+PmergeMe::PmergeMe(int argc, char **argv)
 {
-
+    createDoublon(argc, argv);
+    createlargestContainer();
+    iter(_containerDequeLong, printElement<int>);
+    reorderContainerPair();
+    preorderContainerShort();
+    std::cout << "VALUE SHORT CONTAINER :"  << std::endl;
+    iter(_containerDequeShortPreorder, printElement<int>);
 }
 
 PmergeMe::PmergeMe(const PmergeMe &other)
 {
-
+    *this = other;
 }
 
 PmergeMe &PmergeMe::operator=(const PmergeMe &other)
 {
-
+    return *this;
 }
 
 PmergeMe::~PmergeMe()
@@ -52,10 +58,11 @@ void PmergeMe::controlValue(char *value)
     }
     if (result)
     {
-        if (std::find(_containerDequePair.begin(), _containerDequePair.end(), result) == _containerDequePair.end())
-           return;
-        else
-            throw ErrorDouble(); //doublon
+        for (std::deque<std::pair<int, int>>::iterator it = _containerDequePair.begin(); it != _containerDequePair.end(); it++)
+        {
+            if (it->first == result || it->second == result)
+                throw ErrorDouble(); //doublon
+        }
     }
     else
         throw ErrorNull(); // no value

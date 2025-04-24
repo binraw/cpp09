@@ -10,6 +10,15 @@ int main(int argc, char **argv)
 		std::cout << argv[i] << " ";
 	std::cout << std::endl;
 	std::cout << "After: " << std::endl;
+
+	try {
+
+		PmergeMe test(argc, argv);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr  << e.what() <<  '\n';
+	}
 }
 
 //	controle des values envoyer
@@ -30,5 +39,11 @@ int main(int argc, char **argv)
 - inserer les petits dans le container des grands avec la suite et en se basant avec (le debut/le grand) de leur paire
 - en utilisant en limite haute le grand de sa paire
 
+U n = U n-1 + 2 * U n-2
+
+Faire la gestion des blocks de paires et ranger a partir des plus grands des block de paire
+
+Apres avoir creer mes block par rapport au nombre dans la suite 
+Creer une fonction template de max mais avec un iter sur les nombre present dedans
 
 */
