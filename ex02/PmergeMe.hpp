@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <utility>
 #include <iterator>
+#include <vector>
 
 template <typename T>
 	T min(T &a, T &b)

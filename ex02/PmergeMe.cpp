@@ -296,7 +296,24 @@ void PmergeMe::recursiveSort(std::deque<std::pair<int, int>>& arr)
     }
     _levels += 1; // pour donner au prochain une pair de plus dans son groupe
     recursiveSort(arr);
-     // au moment ou je rappelle cette fnction prendre en compte que je suis deja en mode pair
+     /* La je doit creer le main et le rest container 
+        et je dois separer les paires en gros je dois bien passer en monde deque simple
+        car apres je vais inserer par rapport a l'index de chaque nombre 
+
+        enfaite dans les premiere insertion on doit seulement regarder le plus grand
+        donc possible de continuer avec un deque pair je pense 
+        et quand on arrive sur la derniere insertion de nombre a nombre 
+        alors la creer des container 'simple'
+     */
+    std::vector<std::deque<std::pair<int, int>>::iterator> mainContainer; // je mets des iterator pour que ce soit plus flexible dans un vector pour insert
+    std::vector<std::deque<std::pair<int, int>>::iterator> restContainer;
+
+    std::deque<std::pair<int, int>>::iterator beginInsert = arr.begin();
+    std::advance(beginInsert, actualLevels); // je fais avancer a la premiere pair a mettre
+    // mais j'ai l'impression de devoir mettre tout se qu'il y a devant aussi vu qu'on sait deja que les grands sont trier
+    // je mets direcctement les deux pairs au debut
+    mainContainer.insert(mainContainer.end(), beginInsert);
+
 }
 
 
