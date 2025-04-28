@@ -5,6 +5,8 @@
 #include <iostream>
 #include <stack>
 #include <algorithm>
+#include <utility>
+#include <iterator>
 
 template <typename T>
 	T min(T &a, T &b)
@@ -48,7 +50,7 @@ public:
 	void controlValue(char *value);
 	void createDoublon(int argc, char **argv);
 	void createlargestContainer();
-	void recursiveSort(std::deque<int>& arr);
+	void recursiveSort(std::deque<std::pair<int, int>>& arr);
 	void reorderContainerPair();
 	void preorderContainerShort();
     class ErrorArgs: public std::exception
@@ -69,8 +71,12 @@ public:
     };
 
 private:
+	int _numberOfPairs;
+	int _oddArgs;
+	int _levels; // pour augmenter commencer avec des pair et pair puis multiplier par 2
 	std::deque<std::pair<int, int>> _containerDequePair;
 	std::deque<int> _containerDequeLong;
+	std::deque<int> _containerDequeRest;
 	std::deque<int> _containerDequeShort;
 	std::deque<int> _containerDequeShortPreorder;
 };
