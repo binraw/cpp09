@@ -453,13 +453,12 @@ void PmergeMe::recursiveSort(std::deque<int>& arr)
         --end; 
     }
 
-   
     for (std::deque<int>::iterator it = start; it != end; std::advance(it, 2 * actualLevels))
     {
         std::deque<int>::iterator maxGroupActual = next(it, actualLevels - 1);
         if (next(it, actualLevels * 2 - 1) >= end) 
         {
-            break; // Sortir de la boucle si on dépasse les limites
+            break; // protection pour si on depasse du container
         }
         std::deque<int>::iterator maxGroupeNext = next(it, actualLevels * 2 - 1);
 
@@ -477,3 +476,14 @@ void PmergeMe::recursiveSort(std::deque<int>& arr)
     _levels *= 2; // Incrémenter le niveau pour le prochain appel
     recursiveSort(arr); // Appel récursif
 }
+
+/*
+
+Je dois (je pense) mettre b1 et a1 de base. puis sil il y en d'autre alors j'insere par rapport au plus grand 
+par rapport au plus grand en utilisant la suite de jacob
+en utilisant la recherche binaire. 
+Ah non enfaite je dois rentrer les max seulement puis apres les mini avec la technique du binaire 
+
+je pense vu que j'ai stocker le niveau de recursivite je peux refaire une autre recursive en divisant
+a voir si c'est possible ou si la logique ne le permet pas. 
+*/

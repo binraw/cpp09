@@ -25,7 +25,7 @@ template <typename T>
 		a = b;
 		b = temp;
 	}
-
+// fais pour pouvoir directement assigner la valeur a iterator : 
 template <typename T> T 
 	next(T it, int steps)
 	{
@@ -59,8 +59,6 @@ public:
 	~PmergeMe();
 	void controlValue(char *value);
 	void createDoublon(int argc, char **argv);
-	void createlargestContainer();
-	// void recursiveSort(std::deque<std::pair<int, int>>& arr);
 	void recursiveSort(std::deque<int>& arr);
 	void reorderContainerPair();
 	void preorderContainerShort();
