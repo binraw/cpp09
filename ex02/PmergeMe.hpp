@@ -26,6 +26,15 @@ template <typename T>
 		b = temp;
 	}
 
+template <typename T> T 
+	next(T it, int steps)
+	{
+		std::advance(it, steps);
+		return it;
+	}
+	
+
+
 template <typename T,  typename Func>
 	void iter(T &container, Func func)
 	{
@@ -51,7 +60,8 @@ public:
 	void controlValue(char *value);
 	void createDoublon(int argc, char **argv);
 	void createlargestContainer();
-	void recursiveSort(std::deque<std::pair<int, int>>& arr);
+	// void recursiveSort(std::deque<std::pair<int, int>>& arr);
+	void recursiveSort(std::deque<int>& arr);
 	void reorderContainerPair();
 	void preorderContainerShort();
     class ErrorArgs: public std::exception
@@ -80,8 +90,9 @@ private:
 	std::deque<int> _containerDequeRest;
 	std::deque<int> _containerDequeShort;
 	std::deque<int> _containerDequeShortPreorder;
+	std::deque<int> _simpleTest;
 };
-
+std::deque<int> createSimpleContainer(std::deque<std::pair<int, int>> arr);
 bool isNumber(std::string &str);
-
+void swap_pair(std::deque<int>::iterator it, int pair_level, std::deque<int> &container);
 #endif
