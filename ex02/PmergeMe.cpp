@@ -257,7 +257,7 @@ void PmergeMe::createDoublon(int argc, char **argv)
             {
                 controlValue(argv[i]);
                 controlValue(argv[i + 1]);
-                std::cout << "rentre" << std::endl;
+                // std::cout << "rentre" << std::endl;
                 int first = std::atoi(argv[i]);
                 int second = std::atoi(argv[i + 1]);
                 _containerDequePair.push_back(std::make_pair(first, second));
@@ -273,7 +273,7 @@ void PmergeMe::createDoublon(int argc, char **argv)
             {
                 controlValue(argv[i]);
                 controlValue(argv[i + 1]);
-                std::cout << "rentre pair" << std::endl;
+                // std::cout << "rentre pair" << std::endl;
                 int first = std::atoi(argv[i]);
                 int second = std::atoi(argv[i + 1]);
                 _containerDequePair.push_back(std::make_pair(first, second));
@@ -475,6 +475,7 @@ void PmergeMe::recursiveSort(std::deque<int>& arr)
 
     _levels *= 2; // Incrémenter le niveau pour le prochain appel
     recursiveSort(arr); // Appel récursif
+    recursiveInsert(arr, actualLevels);
 }
 
 /*
@@ -487,3 +488,59 @@ Ah non enfaite je dois rentrer les max seulement puis apres les mini avec la tec
 je pense vu que j'ai stocker le niveau de recursivite je peux refaire une autre recursive en divisant
 a voir si c'est possible ou si la logique ne le permet pas. 
 */
+
+
+void PmergeMe::recursiveInsert(std::deque<int>& arr, int actualLevels)
+{
+
+    std::deque<int> mainPart;
+    std::deque<int> pendingPart;
+    int pair_units_nbr = arr.size() / actualLevels; 
+
+    std::deque<int>::iterator start = arr.begin();
+    std::deque<int>::iterator end = next(start, actualLevels * pair_units_nbr); // a voir si le reste je mets direct dans pendingPart
+
+
+    // ici je vais juste mettre les premier donc B1 (min) et A1 (max) 
+
+        std::deque<int>::iterator maxGroupB = next(start, actualLevels - 1); // B1 max 
+        std::deque<int>::iterator maxGroupA = next(start, actualLevels * 2 - 1); // A1 max
+        
+        for (std::deque<int>::iterator it = start; it != maxGroupB; ++it)
+            mainPart.push_back(*it); // a voir je pense qu'il manque les max
+        for (std::deque<int>::iterator iter = maxGroupB; iter != maxGroupA; ++iter)
+            mainPart.push_back(*iter); // a voir je pense qu'il manque les max
+        mainPart.push_back(*maxGroupA);
+// la il me manque la derniere partie de maxA 
+    std::cout << "Main Part du lvl : " << actualLevels << std::endl;
+    iter(mainPart, printElement<int>);
+    std::cout << "fin main Part." << std::endl;
+
+    if (pair_units_nbr > 2) // ici du coup le reste des valeurs a trier 
+    {
+        for (std::deque<int>::iterator it = maxGroupA + 1; it != end; it++)
+        {
+            pendingPart.push_back(*it);
+        }
+        std::cout << "Valeur de pendingPart level : " << actualLevels << std::endl;
+        iter(pendingPart, printElement<int>);
+        std::cout << "FIN PENDINGPART " << std::endl;
+    }
+    // la je pense je fais insert binaire jusqua deux apres ca me donne une liste avec les plus grands trier 
+    // et apres je recupere les min et la je les insert en faisant tres peu de comparaison
+    // la je vais faire une boucle avec le container pending
+    // em mode iter dessus avec la taille des pair et ensuite les ajouter au container main
+    
+    if (pendingPart.size() != 0)
+    {
+        std::deque<int>::iterator startPending = pendingPart.begin();
+        std::deque<int>::iterator endPending = pendingPart.end();
+        // idee faire une boucle de boucle 
+        // genre je iter sur pending et quand j'arrive sur le bon nombre de jacob je cherche a insert
+        // apres avoir insert je reiter et jajoute tout ceux avant le nombre de jacob
+        // ensuite je recommence avec le nombre suivant en gardant en memoire la limite deja insert
+        // pour ne pas reinsert les parti deja insert avant
+        
+    }
+    
+}

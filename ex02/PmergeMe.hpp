@@ -62,6 +62,7 @@ public:
 	void recursiveSort(std::deque<int>& arr);
 	void reorderContainerPair();
 	void preorderContainerShort();
+	void recursiveInsert(std::deque<int>& arr, int actualLevels);
     class ErrorArgs: public std::exception
     {
         virtual const char* what() const throw();
