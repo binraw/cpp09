@@ -530,17 +530,66 @@ void PmergeMe::recursiveInsert(std::deque<int>& arr, int actualLevels)
     // et apres je recupere les min et la je les insert en faisant tres peu de comparaison
     // la je vais faire une boucle avec le container pending
     // em mode iter dessus avec la taille des pair et ensuite les ajouter au container main
+   
+   
+   // creation d'une liste avec seulement les max pour faire la recherche binaire dessus
+   // et ensuite rajouter pending dans la vrai liste avec toutes ses values
+    std::deque<int> maxValueMain;
+    maxValueMain.push_back(*maxGroupB);
+    maxValueMain.push_back(*maxGroupA);
+
+    std::cout << "VALUE SEULEMENT DES MAX MAIN: " << std::endl;
+    iter(maxValueMain, printElement<int>);
+    std::cout << "FIN DES MAX DE MAIN" << std::endl;
+        
     
     if (pendingPart.size() != 0)
     {
         std::deque<int>::iterator startPending = pendingPart.begin();
         std::deque<int>::iterator endPending = pendingPart.end();
+        size_t numJacob = jacobsthalValue(2);
+        for (std::deque<int>::iterator it = startPending + (actualLevels * numJacob) - 1; it != endPending; next(it, (actualLevels * numJacob) - 1))
+        {
+
+            /*
+            ICI SUITE : JE dois reussir a faire une boucle qui va insert les autres max avant it 
+            comme ca apres jai les max trier 
+            et je peux reconstruire dans main avec toutes les valeurs
+            
+            */
+            std::deque<int>::iterator posValid = std::lower_bound(maxValueMain.begin(), maxValueMain.end(), *it);
+            maxValueMain.insert(it, *it);
+        }
         // idee faire une boucle de boucle 
         // genre je iter sur pending et quand j'arrive sur le bon nombre de jacob je cherche a insert
         // apres avoir insert je reiter et jajoute tout ceux avant le nombre de jacob
         // ensuite je recommence avec le nombre suivant en gardant en memoire la limite deja insert
         // pour ne pas reinsert les parti deja insert avant
+        // for (std::deque<int>::iterator it = startPending; it != endPending; std::advance(it, 2 * actualLevels))
+        // {
+        //     for (std::deque)
+        // }
+
+        // for (std::deque<int>::iterator it = startPending; it != endPending; std::advance(it, (2 * actualLevels) * numJacob))
+        // {
+
+        // }
+        // controle pour etre sur que ca depasse pas
+        // je pense que je vais devoir creer un container avec seulement les max pour check par rapport a eux et ensuite insert a leur debut
+        // if (next(startPending, (2 * actualLevels) * numJacob) <= endPending) 
+        // {
+        //     std::deque<int>::iterator jacobiter = next(startPending, (2 * actualLevels) * numJacob);
+        //     // std::deque<int>::iterator posValid = std::lower_bound(mainPart.begin(), mainPart.end(), *jacobiter);
+
+        // }
         
     }
     
+}
+
+// valeur pour jacobsthal ok lui donner 2 de base pour avoir 3 
+// et apres quand tout les groupe de 3 a 0 sont insert alors mettre a 3 pour 5 et ainsi de suite
+// ca va revenir d'insert 5 - 4 comme groupe
+int jacobsthalValue(int n) {
+    return static_cast<int>(std::round((std::pow(2, n + 1) + (n % 2 == 0 ? 1 : -1)) / 3));
 }
