@@ -28,7 +28,7 @@ template <typename T>
 	}
 // fais pour pouvoir directement assigner la valeur a iterator : 
 template <typename T> T 
-	next(T it, int steps)
+	nextIt(T it, int steps)
 	{
 		std::advance(it, steps);
 		return it;
