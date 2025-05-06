@@ -43,6 +43,19 @@ template <typename T,  typename Func>
 			func(*it);
 	}
 
+template <typename T, typename Func>
+	void iterContainerOfContainer(T &container, Func func)
+	{
+		for (typename T::iterator iter = container.begin(); iter != container.end(); ++iter)
+		{
+			// Utiliser l'itérateur du type du sous-conteneur
+			for (typename T::value_type::iterator it = iter->begin(); it != iter->end(); ++it)
+			{
+				func(*it);
+			}
+		}
+	}
+
 template< typename T >
 	void printElement( T& x )
 	{
@@ -64,6 +77,7 @@ public:
 	void reorderContainerPair();
 	void preorderContainerShort();
 	void recursiveInsert(std::deque<int>& arr, int actualLevels);
+	void recursiveInsertWithContainer(std::deque<int>& arr, int actualLevels);
     class ErrorArgs: public std::exception
     {
         virtual const char* what() const throw();
