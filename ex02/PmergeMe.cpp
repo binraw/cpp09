@@ -632,11 +632,14 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
     std::deque<int>::iterator start = arr.begin();
     std::deque<int>::iterator end = nextIt(start, actualLevels * pair_units_nbr); // a voir si le reste je mets direct dans pendingPart
 
-    if (end != arr.end())
-    {
-        for (std::deque<int>::iterator it = end; it != arr.end(); it++) // la je pense mettre le reste
+    // if (end != arr.end())
+    // {
+        for (std::deque<int>::iterator it = end; it != arr.end(); it++)
+        {
+            std::cout << "Valeur du nombre mis de coter : " << *it << std::endl;
             rest.push_back(*it);
-    }
+        } // la je pense mettre le reste
+    // }
 
     std::deque<std::deque<int>> allContainer;
 
@@ -692,51 +695,51 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
     
         if (startPending + numJacob < endPending)
         {
-            std::cout << "Possible de beug dans le jacob insert" << std::endl;
-
             for (size_t k = 2; startPending +  numJacob < endPending; ++k)
             {
-                
+                std::cout << "valeur de jacob : " << numJacob << std::endl;
                 std::deque<std::deque<int>>::iterator it = startPending +  numJacob;
         
                 int lastElement = it->back();
+                std::cout << "valeur de lastelement : " << lastElement << std::endl;
                 std::deque<std::deque<int>>::iterator posValid = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement,
                 [](const std::deque<int>& a, const int& b) 
                 {
                     return a.back() < b;
                 }); // revenir car j'ai rien compris pourquoi la ca fonctionne alors quavant javais un beug
-
-            mainPart.insert(posValid, *it);
-
-            // std::cout << "Main Part du lvl : " << actualLevels << std::endl;
-            // iterContainerOfContainer(mainPart, printElement<int>);
-            // std::cout << "fin main Part." << std::endl;
-            //
-            std::cout << "Value de k: " << k << std::endl;
+                if (std::find(mainPart.begin(), mainPart.end(), *it) == mainPart.end())
+                    mainPart.insert(posValid, *it);
             int nu;    
             if (k == 2)
                 int nu = 0;
             else 
                 int nu = k;
-            for (int j = nu ; j <  numJacob; ++j) // ici je doit trouver un truc pour enlever les anciens qui sont deja mis 
+            for (int j = nu ; j <  numJacob - 1; ++j)
             {
-                /*
-                ICI JE DOIS : trouver un moyen de mettre une limite 
-                pour que les nombres deja implementer ne soit pas de nouveau implementer
-                je pense pouvoir jouer avec les limites pour ca 
-                dernier recours utiliser la fonction find qui je pense compte comme une comparaison 
-                donc pas correct
-                
-                */
                 if (it - j >= startPending) 
                 {
-                    std::deque<std::deque<int>>::iterator prevPos = std::lower_bound(mainPart.begin(), posValid, *(it - j),
-                    [](const std::deque<int>& a, const std::deque<int>& b) 
+                    if (std::find(mainPart.begin(), mainPart.end(), *(it - j)) == mainPart.end())
                     {
-                        return a.back() < b.back();
-                    });
-                    mainPart.insert(prevPos, *(it - j));
-                    std::cout << "Value max insert dans jacob : " << (it - j)->back() << std::endl;
+                        std::deque<std::deque<int>>::iterator prevPos = std::lower_bound(mainPart.begin(), mainPart.end(), *(it - j),
+                        [](const std::deque<int>& a, const std::deque<int>& b) 
+                        {
+                            return a.back() < b.back();
+                        });
+                    }
+                    else // rajout si jacob pas plus grand mais deja insert donc insert tout ce qui a avant lui
+                    {
+                        for (std::deque<std::deque<int>>::iterator it = startPending; it != endPending; it++)
+                        {
+                            int lastElement = it->back();
+                            std::deque<std::deque<int>>::iterator posValid = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement,
+                            [](const std::deque<int>& a, const int& b) 
+                            {
+                                return a.back() < b;
+                            });
+                            if (std::find(mainPart.begin(), mainPart.end(), *it) == mainPart.end())
+                                mainPart.insert(posValid, *it);
+                        }
+                    }
                 }
             }
 
@@ -745,6 +748,7 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
         }
         else // ici je fais si le nombre de jacob trop grand alors je commence au debut de la liste 
         {
+            std::cout << "rentre" << std::endl;
             for (std::deque<std::deque<int>>::iterator it = startPending /*ici -1 av*/; it != endPending; it++)
             {
                 int lastElement = it->back();
@@ -762,6 +766,9 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
             }
         }
     }
+                std::cout << "main part avant ajout a simple: " << std::endl;
+                iterContainerOfContainer(mainPart, printElement<int>);
+                std::cout << "FIN DE main" << std::endl;
         _simpleTest.clear();
         for (std::deque<std::deque<int>>::iterator it = mainPart.begin(); it != mainPart.end(); it++)
         {
