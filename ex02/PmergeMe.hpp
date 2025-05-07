@@ -9,6 +9,7 @@
 #include <iterator>
 #include <vector>
 #include <cmath>
+#include <ctime>
 
 template <typename T>
 	T min(T &a, T &b)
