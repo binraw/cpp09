@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv)
 {
-
+	std::cout << "Nombre de nombres : " << argc - 1 << std::endl;
 	std::cout << "Before: ";
 	for (int i = 1; i < argc; i++)
 		std::cout << argv[i] << " ";
@@ -19,6 +19,7 @@ int main(int argc, char **argv)
 	{
 		std::cerr  << e.what() <<  '\n';
 	}
+	
 }
 
 //	controle des values envoyer
