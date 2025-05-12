@@ -1,7 +1,5 @@
 #include "PmergeMe.hpp"
 
-
-
 /*
 Process de mon algo ford-Johnson
 
@@ -29,49 +27,83 @@ et a la fin du niveau de insert je les rajoute a la fin ils finiront par etre as
 */
 PmergeMe::PmergeMe()
 {
-    _numberOfPairs = 0;
-    _oddArgs = 0;
     _levels = 1;
 }
 
+// PmergeMe::PmergeMe(int argc, char **argv)
+// {
+//     _levels = 2;
+//     clock_t start = clock();
+//     createDoublon(argc, argv);
+//     _simpleTest = createSimpleContainer(_containerDequePair);
+//     recursiveSort(_simpleTest);
+//     duoSort(_simpleTest);
+
+//     if (_containerDequeRest.size() == 1)
+//     {
+//         std::deque<int>::iterator it = _containerDequeRest.begin();
+//         std::deque<int>::iterator posValid = std::lower_bound(_simpleTest.begin(), _simpleTest.end(), *it);
+//         _simpleTest.insert(posValid, *it);
+
+//     }
+//     clock_t end = clock();
+//     iter(_simpleTest, printElementFinal<int>);
+//     // std::cout << "Nombre final d'elements : " << _simpleTest.size() << std::endl;
+//     double duration = double(end - start) / CLOCKS_PER_SEC;
+//     std::cout << "\nTime to process a range of " << _simpleTest.size()  << " elements with std::deque : " << duration << " secondes." << std::endl;
+// }
+
+
+
 PmergeMe::PmergeMe(int argc, char **argv)
 {
-    _numberOfPairs = 0;
-    _oddArgs = 0;
-    _levels = 2;
+
+    int levelsDeque = _levels;
+    int levelsVector = _levels;
     clock_t start = clock();
-    createDoublon(argc, argv);
-    _simpleTest = createSimpleContainer(_containerDequePair);
-    recursiveSort(_simpleTest);
-    clock_t debut = clock();
-    duoSort(_simpleTest);
-    // recursiveInsertWithContainer(_simpleTest, 1);
-    clock_t fin = clock();
-    double sec = double(fin - debut) / CLOCKS_PER_SEC;
-    std::cout << "Time apres insert solo : " << sec << " secondes." << std::endl;
+    createDoublonTemp(argc, argv, _containerDequePair, _containerDequeRest);
+    _simpleTestDeque = createSimpleContainerTemp(_containerDequePair);
+    recursiveSortTemp(_simpleTestDeque, levelsDeque);
+    duoSortTemplate(_simpleTestDeque, _containerDequePair);
 
     if (_containerDequeRest.size() == 1)
     {
         std::deque<int>::iterator it = _containerDequeRest.begin();
-        std::deque<int>::iterator posValid = std::lower_bound(_simpleTest.begin(), _simpleTest.end(), *it);
-        _simpleTest.insert(posValid, *it);
+        std::deque<int>::iterator posValid = std::lower_bound(_simpleTestDeque.begin(), _simpleTestDeque.end(), *it);
+        _simpleTestDeque.insert(posValid, *it);
 
     }
     clock_t end = clock();
-    iter(_simpleTest, printElement<int>);
-    std::cout << "Nombre final d'elements : " << _simpleTest.size() << std::endl;
+    iter(_simpleTestDeque, printElementFinal<int>);
     double duration = double(end - start) / CLOCKS_PER_SEC;
-    std::cout << "Time : " << duration << " secondes." << std::endl;
+    std::cout << "\nTime to process a range of " << _simpleTestDeque.size()  << " elements with std::deque : " << duration << " secondes." << std::endl;
+
+    clock_t startVector = clock();
+    createDoublonTemp(argc, argv, _containerVectorPair, _containerVectorRest);
+    _simpleTestVector = createSimpleContainerTemp(_containerVectorPair);
+    recursiveSortTemp(_simpleTestVector, levelsVector);
+    duoSortTemplate(_simpleTestVector, _containerVectorPair);
+
+    if (_containerVectorRest.size() == 1)
+    {
+        std::vector<int>::iterator it = _containerVectorRest.begin();
+        std::vector<int>::iterator posValid = std::lower_bound(_simpleTestVector.begin(), _simpleTestVector.end(), *it);
+        _simpleTestVector.insert(posValid, *it);
+    }
+    clock_t endVector = clock();
+    iter(_simpleTestVector, printElementFinal<int>);
+    double timeVector = double(endVector - startVector) / CLOCKS_PER_SEC;
+    std::cout << "\nTime to process a range of " << _simpleTestVector.size()  << " elements with std::vector : " << timeVector << " secondes." << std::endl;
+
 }
+
 /*
-
-
 C'est seulement le dernier insert que je dois opti car il prends bcp trop de temps mais deja il suffi de verifier 
 par rapport a son max pour l'insert
-
-
-
 */
+
+
+
 PmergeMe::PmergeMe(const PmergeMe &other)
 {
     *this = other;
@@ -87,7 +119,7 @@ PmergeMe::~PmergeMe()
 
 }
 
-std::deque<int> createSimpleContainer(std::deque<std::pair<int, int>> arr)
+std::deque<int> createSimpleContainer(std::deque<std::pair<int, int>> arr) // fait en templates
 {
     std::deque<int> result;
     for (std::deque<std::pair<int, int>>::iterator it = arr.begin(); it != arr.end(); it++)
@@ -97,6 +129,8 @@ std::deque<int> createSimpleContainer(std::deque<std::pair<int, int>> arr)
     }
     return result;
 }
+
+
 
 bool isNumber(std::string &str)
 {
@@ -111,7 +145,10 @@ bool isNumber(std::string &str)
 	return true;
 }
 
-void PmergeMe::controlValue(char *value)
+
+
+
+void PmergeMe::controlValue(char *value) // fait en template
 {
     int result;
     try {
@@ -136,38 +173,6 @@ void PmergeMe::controlValue(char *value)
 }
 
 
-
-void PmergeMe::reorderContainerPair()
-{
-    std::deque<std::pair<int, int>> reorderContainer;
-    for (std::deque<int>::iterator it = _containerDequeLong.begin(); it != _containerDequeLong.end(); it++)
-    {
-        for (std::deque<std::pair<int, int>>::iterator iter = _containerDequePair.begin(); iter != _containerDequePair.end(); iter++)
-        {
-            if (*it == iter->second)
-            {
-                reorderContainer.push_back(*iter);
-                break;
-            }
-        }
-    }
-    _containerDequePair = reorderContainer;
-}
-
-/*
-    
-
-*/
-
-
-void PmergeMe::preorderContainerShort()
-{
-    for (std::deque<std::pair<int, int>>::iterator it = _containerDequePair.begin(); it != _containerDequePair.end(); it++)
-    {
-        _containerDequeShortPreorder.push_back(it->first);
-    }
-}
-
 const char* PmergeMe::ErrorArgs::what() const  throw()
 {
     return "Invalid Arguments.";
@@ -190,12 +195,10 @@ const char* PmergeMe::ErrorRange::what() const  throw()
 
 
 
-
-void PmergeMe::createDoublon(int argc, char **argv)
+void PmergeMe::createDoublon(int argc, char **argv) // fait en template
 {
     if ((argc % 2) == 0)
     {
-        _oddArgs = 1;
         int i = 1;
         controlValue(argv[i]);
         _containerDequeRest.push_back(std::atoi(argv[i]));
@@ -233,7 +236,9 @@ void PmergeMe::createDoublon(int argc, char **argv)
 }
 
 
-void swap_pair(std::deque<int>::iterator it, int pair_level, std::deque<int> &container)
+
+
+void swap_pair(std::deque<int>::iterator it, int pair_level, std::deque<int> &container) // fait en template
 {
     std::deque<int>::iterator start = nextIt(it, -pair_level + 1);
     std::deque<int>::iterator end = nextIt(start, pair_level);
@@ -253,7 +258,9 @@ donc au debut fais des paires qui vont swap entre elles
 puis des paires de paires qui swap etc ... 
 */
 
-void PmergeMe::recursiveSort(std::deque<int>& arr)
+
+
+void PmergeMe::recursiveSort(std::deque<int>& arr) // fait en template
 {
     if (arr.empty()) 
         return;
@@ -297,7 +304,19 @@ void PmergeMe::recursiveSort(std::deque<int>& arr)
 }
 
 
-void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLevels)
+
+
+
+    /*
+    
+    
+    
+    
+    
+    
+    */
+
+void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLevels) // fait en template
 {
     std::deque<std::deque<int>> mainPart;
     std::deque<std::deque<int>> pendingPart;
@@ -343,7 +362,6 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
             pendingPart.push_back(*it);
         }
     }
-    clock_t debut = clock();
     
     
     if (pendingPart.size() != 0)
@@ -407,10 +425,6 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
         }
     }
 
-    clock_t fin = clock();
-    double sec = double(fin - debut) / CLOCKS_PER_SEC;
-    std::cout << "Time apres insert : " << sec << " secondes. Le lvl en question : " << actualLevels << std::endl;
-
         _simpleTest.clear();
 
         for (std::deque<std::deque<int>>::iterator it = mainPart.begin(); it != mainPart.end(); it++)
@@ -428,6 +442,12 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
         }
     }
 
+/*
+
+
+
+
+*/
 
 
 
@@ -437,8 +457,20 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
 
 
 
+    /*
+    
+    
+    
+    
+    
+    
+    
+    
+    */
 
-void PmergeMe::duoSort(std::deque<int>& arr)
+
+
+void PmergeMe::duoSort(std::deque<int>& arr) // fait en template
 {
     std::deque<int> mainPart;
     std::deque<int> pendingPart;
@@ -520,32 +552,19 @@ void PmergeMe::duoSort(std::deque<int>& arr)
         _simpleTest.clear();
         _simpleTest = mainPart;
 
-
     }
 
-int binome(int min, std::deque<std::pair<int, int>> arr)
-{
-    for (std::deque<std::pair<int, int>>::iterator it = arr.begin(); it != arr.end(); it++)
-    {
-        if (min == it->first)
-            return it->second;
-    }
-    return 0;
-}
-
-// std::deque<int>::iterator posOfMax(int value, std::deque<int> arr)
+// int binome(int min, std::deque<std::pair<int, int>> arr)
 // {
-//     std::find(arr.begin(), arr.end(), value);
-
+//     for (std::deque<std::pair<int, int>>::iterator it = arr.begin(); it != arr.end(); it++)
+//     {
+//         if (min == it->first)
+//             return it->second;
+//     }
+//     return 0;
 // }
 
 
-
-
-
-// valeur pour jacobsthal ok lui donner 2 de base pour avoir 3 
-// et apres quand tout les groupe de 3 a 0 sont insert alors mettre a 3 pour 5 et ainsi de suite
-// ca va revenir d'insert 5 - 4 comme groupe
 int jacobsthalValue(int n) 
 {
     return static_cast<int>(std::round((std::pow(2, n + 1) + (n % 2 == 0 ? 1 : -1)) / 3));
