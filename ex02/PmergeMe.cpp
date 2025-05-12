@@ -44,10 +44,11 @@ PmergeMe::PmergeMe(int argc, char **argv)
     _simpleTest = createSimpleContainer(_containerDequePair);
     recursiveSort(_simpleTest);
     clock_t debut = clock();
-    recursiveInsertWithContainer(_simpleTest, 1);
+    duoSort(_simpleTest);
+    // recursiveInsertWithContainer(_simpleTest, 1);
     clock_t fin = clock();
     double sec = double(fin - debut) / CLOCKS_PER_SEC;
-    std::cout << "Time apres insert : " << sec << " secondes." << std::endl;
+    std::cout << "Time apres insert solo : " << sec << " secondes." << std::endl;
 
     if (_containerDequeRest.size() == 1)
     {
@@ -57,7 +58,7 @@ PmergeMe::PmergeMe(int argc, char **argv)
 
     }
     clock_t end = clock();
-    // iter(_simpleTest, printElement<int>);
+    iter(_simpleTest, printElement<int>);
     std::cout << "Nombre final d'elements : " << _simpleTest.size() << std::endl;
     double duration = double(end - start) / CLOCKS_PER_SEC;
     std::cout << "Time : " << duration << " secondes." << std::endl;
@@ -342,7 +343,9 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
             pendingPart.push_back(*it);
         }
     }
-   
+    clock_t debut = clock();
+    
+    
     if (pendingPart.size() != 0)
     {
         std::deque<std::deque<int>>::iterator startPending = pendingPart.begin();
@@ -362,36 +365,30 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
                 {
                     return a.back() < b;
                 });
-                if (std::find(mainPart.begin(), mainPart.end(), *it) == mainPart.end())
+                if (posValid == mainPart.end())
                     mainPart.insert(posValid, *it);
-            int nu;    
-            if (k == 2)
-                int nu = 0;
-            else 
-                int nu = k;
+
+            int nu = (k == 2) ? 0 : k;
+            std::deque<std::deque<int>>::iterator newLimit = posValid;
             for (int j = nu ; j <  numJacob - 1; j++)
             {
                 if (it - j >= startPending) 
                 {
-                    for (std::deque<std::deque<int>>::iterator it = startPending; it != endPending; it++)
+                    for (std::deque<std::deque<int>>::iterator iter = startPending; iter != endPending; iter++)
                     {
-                        int lastElement = it->back();
-                        std::deque<std::deque<int>>::iterator posValid = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement,
+                        int lastElement = iter->back();
+                        std::deque<std::deque<int>>::iterator pos = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement,
                         [](const std::deque<int>& a, const int& b) 
                         {
                             return a.back() < b;
                         });
-                        if (std::find(mainPart.begin(), mainPart.end(), *it) == mainPart.end())
-                            mainPart.insert(posValid, *it);
+                        if(pos == mainPart.end() || *pos != *iter)
+                            mainPart.insert(pos, *iter);
                     }
                 }
 
             }
-            // clock_t start = clock();
             numJacob = jacobsthalValue(k + 1);
-            // clock_t end = clock();
-            // double duration = double(end - start) / CLOCKS_PER_SEC;
-            // std::cout << "Time apres jacob : " << duration << " secondes." << std::endl;
             }
         }
         else
@@ -406,22 +403,14 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
                 });
                 mainPart.insert(posValid, *it);
             }
+
         }
     }
 
-    for (std::deque<std::deque<int>>::iterator it = pendingPart.begin(); it != pendingPart.end(); it++)
-    {
-        if (std::find(mainPart.begin(), mainPart.end(), *it) == mainPart.end())
-        {
-            int lastElement = it->back();
-                std::deque<std::deque<int>>::iterator posValid = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement,
-                [](const std::deque<int>& a, const int& b) 
-                {
-                    return a.back() < b;
-                });
-                mainPart.insert(posValid, *it);
-        }
-    }
+    clock_t fin = clock();
+    double sec = double(fin - debut) / CLOCKS_PER_SEC;
+    std::cout << "Time apres insert : " << sec << " secondes. Le lvl en question : " << actualLevels << std::endl;
+
         _simpleTest.clear();
 
         for (std::deque<std::deque<int>>::iterator it = mainPart.begin(); it != mainPart.end(); it++)
@@ -438,6 +427,121 @@ void PmergeMe::recursiveInsertWithContainer(std::deque<int>& arr, int actualLeve
             
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+void PmergeMe::duoSort(std::deque<int>& arr)
+{
+    std::deque<int> mainPart;
+    std::deque<int> pendingPart;
+    _containerDequePair.clear();
+    for (std::deque<int>::iterator it = arr.begin(); it != arr.end(); it += 2) 
+    {
+        if (it + 1 < arr.end())
+        {
+            
+            int first = *it;
+            int second = *(it + 1);
+            _containerDequePair.push_back(std::make_pair(first, second));
+        }
+    }
+    mainPart.push_back(_containerDequePair.begin()->first);  
+    mainPart.push_back(_containerDequePair.begin()->second);
+
+
+    for (std::deque<std::pair<int, int>>::iterator it = _containerDequePair.begin() + 1; it != _containerDequePair.end(); it++)
+    {
+        pendingPart.push_back(it->first);
+    }
+
+    for (std::deque<std::pair<int, int>>::iterator it = _containerDequePair.begin() + 1; it != _containerDequePair.end(); it++)
+    {
+        mainPart.push_back(it->second);
+    }
+    
+    if (pendingPart.size() != 0)
+    {
+        std::deque<int>::iterator startPending = pendingPart.begin();
+        std::deque<int>::iterator endPending = pendingPart.end();
+
+
+        size_t numJacob = jacobsthalValue(2);
+    
+        if (startPending + numJacob < endPending)
+        {
+            for (size_t k = 2; startPending +  numJacob < endPending; ++k)
+            {
+                std::deque<int>::iterator it = startPending +  numJacob;
+
+                int lastElement = *it;
+                std::deque<int>::iterator posValid = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement);
+                if (std::find(mainPart.begin(), mainPart.end(), *it) == mainPart.end())
+                    mainPart.insert(posValid, *it);
+
+            int nu = (k == 2) ? 0 : k;
+            
+            for (int j = nu ; j <  numJacob - 1; j++)
+            {
+                if (it - j >= startPending) 
+                {
+                    for (std::deque<int>::iterator iter = startPending; iter != endPending; iter++)
+                    {
+                        int lastElement = *iter;
+
+                        std::deque<int>::iterator pos = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement);
+                        if(pos == mainPart.end() || *pos != *iter)
+                            mainPart.insert(pos, *iter);
+                    }
+                }
+
+            }
+            numJacob = jacobsthalValue(k + 1);
+            }
+        }
+        else
+        {
+            for (std::deque<int>::iterator it = startPending; it != endPending; it++)
+            {
+                int lastElement = *it;
+                std::deque<int>::iterator posValid = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement);
+                mainPart.insert(posValid, *it);
+            }
+
+        }
+    }
+        _simpleTest.clear();
+        _simpleTest = mainPart;
+
+
+    }
+
+int binome(int min, std::deque<std::pair<int, int>> arr)
+{
+    for (std::deque<std::pair<int, int>>::iterator it = arr.begin(); it != arr.end(); it++)
+    {
+        if (min == it->first)
+            return it->second;
+    }
+    return 0;
+}
+
+// std::deque<int>::iterator posOfMax(int value, std::deque<int> arr)
+// {
+//     std::find(arr.begin(), arr.end(), value);
+
+// }
+
+
+
+
 
 // valeur pour jacobsthal ok lui donner 2 de base pour avoir 3 
 // et apres quand tout les groupe de 3 a 0 sont insert alors mettre a 3 pour 5 et ainsi de suite

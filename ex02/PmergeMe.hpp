@@ -79,6 +79,7 @@ public:
 	void preorderContainerShort();
 	void recursiveInsert(std::deque<int>& arr, int actualLevels);
 	void recursiveInsertWithContainer(std::deque<int>& arr, int actualLevels);
+	void duoSort(std::deque<int>& arr);
     class ErrorArgs: public std::exception
     {
         virtual const char* what() const throw();
@@ -111,4 +112,5 @@ std::deque<int> createSimpleContainer(std::deque<std::pair<int, int>> arr);
 bool isNumber(std::string &str);
 void swap_pair(std::deque<int>::iterator it, int pair_level, std::deque<int> &container);
 int jacobsthalValue(int n);
+int binome(int min, std::deque<std::pair<int, int>> arr);
 #endif
