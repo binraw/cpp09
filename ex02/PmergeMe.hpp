@@ -12,6 +12,11 @@
 #include <ctime>
 #include <exception>
 
+template <typename ContainerOfContainer>
+void controlValueTemp(char *value, ContainerOfContainer &arr);
+
+template <typename Container, typename ContainerOfContainer>
+    void recursiveInsertWithContainerTemp(Container &arr, int actualLevels, ContainerOfContainer &container);
 
 bool isNumber(std::string &str);
 void swap_pair(std::deque<int>::iterator it, int pair_level, std::deque<int> &container);
@@ -77,10 +82,10 @@ template< typename T >
 	}
 
 
-template <typename Container , typename ResultContainer>
-    ResultContainer createSimpleContainerTemp(const Container &arr)
+template <typename Container, typename ResultContainer>
+    ResultContainer createSimpleContainerTemp(const Container &arr, ResultContainer result)
     {
-        ResultContainer result;
+        result.clear();
         for (typename Container::const_iterator it = arr.begin(); it != arr.end(); it++)
         {
             result.push_back(it->first);
@@ -150,11 +155,11 @@ template <typename Container>
 
 
 
-template <typename Container>
-    void recursiveSortTemp(Container &arr, int levels)
+template <typename Container, typename ContainerOfContainer>
+    void recursiveSortTemp(Container &arr, int levels, ContainerOfContainer &container)
     {
         if (arr.empty()) 
-        return;
+            return;
 
         int actualLevels = levels;
         int pair_units_nbr = arr.size() / actualLevels; // Nombre de paires
@@ -187,8 +192,8 @@ template <typename Container>
             }
         }
         levels *= 2;
-        recursiveSortTemp(arr, levels);
-        recursiveInsertWithContainer(arr, actualLevels);
+        recursiveSortTemp(arr, levels, container);
+        recursiveInsertWithContainerTemp(arr, actualLevels, container);
     }
 
 
@@ -196,7 +201,7 @@ template <typename Container>
 
 
 template <typename Container, typename ContainerOfContainer>
-    void recursiveInsertWithContainerTemp(Container &arr, int actualLevels)
+    void recursiveInsertWithContainerTemp(Container &arr, int actualLevels, ContainerOfContainer &container)
     {
         ContainerOfContainer mainPart;
         ContainerOfContainer pendingPart;
@@ -303,15 +308,15 @@ template <typename Container, typename ContainerOfContainer>
 
         arr.clear();
 
-        for (std::deque<std::deque<int>>::iterator it = mainPart.begin(); it != mainPart.end(); it++)
+        for (typename ContainerOfContainer::iterator it = mainPart.begin(); it != mainPart.end(); it++)
         {
-            for (std::deque<int>::iterator iter = it->begin(); iter != it->end(); ++iter)
+            for (typename Container::iterator iter = it->begin(); iter != it->end(); ++iter)
             {
                arr.push_back(*iter); 
             }
         }
 
-        for (std::deque<int>::iterator it = rest.begin(); it != rest.end(); it++)
+        for (typename Container::iterator it = rest.begin(); it != rest.end(); it++)
         {
                arr.push_back(*it); 
             
@@ -408,7 +413,30 @@ template <typename Container, typename ContainerOfPair>
 
 
 	
-	
+    template <typename ContainerOfContainer>
+    void controlValueTemp(char *value, ContainerOfContainer &arr)
+    {
+        int result;
+        try {
+            result = std::atoi(value);
+        }
+        catch (std::invalid_argument const& ex){
+            throw "error";
+        }
+        catch (std::out_of_range const& ex){
+            throw "error";
+        }
+        if (result)
+        {
+            for (typename ContainerOfContainer::iterator it = arr.begin(); it != arr.end(); it++)
+            {
+                if (it->first == result || it->second == result)
+                    throw "error";
+            }
+        }
+        else
+            throw "error";
+    }
 	
 	class PmergeMe
 	{
@@ -417,11 +445,11 @@ template <typename Container, typename ContainerOfPair>
 	PmergeMe(const PmergeMe &other);
 	PmergeMe &operator=(const PmergeMe &other);
 	~PmergeMe();
-	void controlValue(char *value);
-	void createDoublon(int argc, char **argv);
-	void recursiveSort(std::deque<int>& arr);
-	void recursiveInsertWithContainer(std::deque<int>& arr, int actualLevels);
-	void duoSort(std::deque<int>& arr);
+	// void controlValue(char *value);
+	// void createDoublon(int argc, char **argv);
+	// void recursiveSort(std::deque<int>& arr);
+	// void recursiveInsertWithContainer(std::deque<int>& arr, int actualLevels);
+	// void duoSort(std::deque<int>& arr);
 		public:
 		class ErrorArgs: public std::exception
 		{
@@ -440,37 +468,39 @@ template <typename Container, typename ContainerOfPair>
 			virtual const char* what() const throw();
 		};
 
-	template <typename ContainerOfContainer>
-		void controlValueTemp(char *value, ContainerOfContainer &arr)
-		{
-			int result;
-			try {
-				result = std::atoi(value);
-			}
-			catch (std::invalid_argument const& ex){
-				throw ErrorArgs();
-			}
-			catch (std::out_of_range const& ex){
-				throw ErrorRange();
-			}
-			if (result)
-			{
-				for (typename ContainerOfContainer::iterator it = arr.begin(); it != arr.end(); it++)
-				{
-					if (it->first == result || it->second == result)
-						throw ErrorDouble();
-				}
-			}
-			else
-				throw ErrorNull();
-		}
+	// template <typename ContainerOfContainer>
+	// 	void controlValueTemp(char *value, ContainerOfContainer &arr)
+	// 	{
+	// 		int result;
+	// 		try {
+	// 			result = std::atoi(value);
+	// 		}
+	// 		catch (std::invalid_argument const& ex){
+	// 			throw ErrorArgs();
+	// 		}
+	// 		catch (std::out_of_range const& ex){
+	// 			throw ErrorRange();
+	// 		}
+	// 		if (result)
+	// 		{
+	// 			for (typename ContainerOfContainer::iterator it = arr.begin(); it != arr.end(); it++)
+	// 			{
+	// 				if (it->first == result || it->second == result)
+	// 					throw ErrorDouble();
+	// 			}
+	// 		}
+	// 		else
+	// 			throw ErrorNull();
+	// 	}
 	
 	private:
 	std::deque<std::pair<int, int>> _containerDequePair;
+    std::deque<std::deque<int>> _containerDequeOfDeque;
 	std::deque<int> _containerDequeRest;
 	std::deque<int> _simpleTestDeque;
 
 	std::vector<std::pair<int, int>> _containerVectorPair;
+    std::vector<std::vector<int>> _containerVectorOfVector;
 	std::vector<int> _containerVectorRest;
 	std::vector<int> _simpleTestVector;
 
