@@ -13,13 +13,13 @@
 #include <exception>
 
 template <typename ContainerOfContainer>
-void controlValueTemp(char *value, ContainerOfContainer &arr);
+    void controlValueTemp(char *value, ContainerOfContainer &arr);
 
 template <typename Container, typename ContainerOfContainer>
     void recursiveInsertWithContainerTemp(Container &arr, int actualLevels, ContainerOfContainer &container);
 
 bool isNumber(std::string &str);
-void swap_pair(std::deque<int>::iterator it, int pair_level, std::deque<int> &container);
+
 static int jacobsthalValue(int n);
 
 template <typename T>
@@ -38,7 +38,8 @@ template <typename T>
 		a = b;
 		b = temp;
 	}
-// fais pour pouvoir directement assigner la valeur a iterator : 
+
+
 template <typename T> T 
 	nextIt(T it, int steps)
 	{
@@ -162,7 +163,7 @@ template <typename Container, typename ContainerOfContainer>
             return;
 
         int actualLevels = levels;
-        int pair_units_nbr = arr.size() / actualLevels; // Nombre de paires
+        int pair_units_nbr = arr.size() / actualLevels; // Nombre de paires / groupes
         if (pair_units_nbr < 2)
             return;
 
@@ -186,9 +187,7 @@ template <typename Container, typename ContainerOfContainer>
             if (maxGroupeNextIt < end) 
             {
                 if (*maxGroupeNextIt < *maxGroupActual)
-                {
                     ::swap_pairTemp(maxGroupActual, actualLevels, arr);
-                }
             }
         }
         levels *= 2;
@@ -311,16 +310,11 @@ template <typename Container, typename ContainerOfContainer>
         for (typename ContainerOfContainer::iterator it = mainPart.begin(); it != mainPart.end(); it++)
         {
             for (typename Container::iterator iter = it->begin(); iter != it->end(); ++iter)
-            {
-               arr.push_back(*iter); 
-            }
+               arr.push_back(*iter);
         }
 
         for (typename Container::iterator it = rest.begin(); it != rest.end(); it++)
-        {
-               arr.push_back(*it); 
-            
-        }
+            arr.push_back(*it); 
     }
 
 
@@ -412,6 +406,47 @@ template <typename Container, typename ContainerOfPair>
     }
 
 
+    class PmergeMe
+    {
+        
+        public:
+        PmergeMe();
+        PmergeMe(int argc, char **argv);
+        PmergeMe(const PmergeMe &other);
+        PmergeMe &operator=(const PmergeMe &other);
+        ~PmergeMe();
+        class ErrorArgs: public std::exception
+        {
+            virtual const char* what() const throw();
+        };
+        class ErrorRange: public std::exception
+        {
+            virtual const char* what() const throw();
+        };
+        class ErrorDouble: public std::exception
+        {
+            virtual const char* what() const throw();
+        };
+        class ErrorNull: public std::exception
+        {
+            virtual const char* what() const throw();
+        };
+
+
+    
+    private:
+    std::deque<std::pair<int, int>> _containerDequePair;
+    std::deque<std::deque<int>> _containerDequeOfDeque;
+    std::deque<int> _containerDequeRest;
+    std::deque<int> _simpleTestDeque;
+
+    std::vector<std::pair<int, int>> _containerVectorPair;
+    std::vector<std::vector<int>> _containerVectorOfVector;
+    std::vector<int> _containerVectorRest;
+    std::vector<int> _simpleTestVector;
+
+    int _levels;
+};
 	
     template <typename ContainerOfContainer>
     void controlValueTemp(char *value, ContainerOfContainer &arr)
@@ -421,94 +456,22 @@ template <typename Container, typename ContainerOfPair>
             result = std::atoi(value);
         }
         catch (std::invalid_argument const& ex){
-            throw "error";
+            throw  PmergeMe::ErrorArgs();
         }
         catch (std::out_of_range const& ex){
-            throw "error";
+            throw   PmergeMe::ErrorNull();
         }
         if (result)
         {
             for (typename ContainerOfContainer::iterator it = arr.begin(); it != arr.end(); it++)
             {
                 if (it->first == result || it->second == result)
-                    throw "error";
+                    throw  PmergeMe::ErrorDouble();
             }
         }
         else
-            throw "error";
+            throw PmergeMe::ErrorNull();
     }
-	
-	class PmergeMe
-	{
-		PmergeMe();
-		PmergeMe(int argc, char **argv);
-	PmergeMe(const PmergeMe &other);
-	PmergeMe &operator=(const PmergeMe &other);
-	~PmergeMe();
-	// void controlValue(char *value);
-	// void createDoublon(int argc, char **argv);
-	// void recursiveSort(std::deque<int>& arr);
-	// void recursiveInsertWithContainer(std::deque<int>& arr, int actualLevels);
-	// void duoSort(std::deque<int>& arr);
-		public:
-		class ErrorArgs: public std::exception
-		{
-			virtual const char* what() const throw();
-		};
-		class ErrorRange: public std::exception
-		{
-			virtual const char* what() const throw();
-		};
-		class ErrorDouble: public std::exception
-		{
-			virtual const char* what() const throw();
-		};
-		class ErrorNull: public std::exception
-		{
-			virtual const char* what() const throw();
-		};
 
-	// template <typename ContainerOfContainer>
-	// 	void controlValueTemp(char *value, ContainerOfContainer &arr)
-	// 	{
-	// 		int result;
-	// 		try {
-	// 			result = std::atoi(value);
-	// 		}
-	// 		catch (std::invalid_argument const& ex){
-	// 			throw ErrorArgs();
-	// 		}
-	// 		catch (std::out_of_range const& ex){
-	// 			throw ErrorRange();
-	// 		}
-	// 		if (result)
-	// 		{
-	// 			for (typename ContainerOfContainer::iterator it = arr.begin(); it != arr.end(); it++)
-	// 			{
-	// 				if (it->first == result || it->second == result)
-	// 					throw ErrorDouble();
-	// 			}
-	// 		}
-	// 		else
-	// 			throw ErrorNull();
-	// 	}
-	
-	private:
-	std::deque<std::pair<int, int>> _containerDequePair;
-    std::deque<std::deque<int>> _containerDequeOfDeque;
-	std::deque<int> _containerDequeRest;
-	std::deque<int> _simpleTestDeque;
 
-	std::vector<std::pair<int, int>> _containerVectorPair;
-    std::vector<std::vector<int>> _containerVectorOfVector;
-	std::vector<int> _containerVectorRest;
-	std::vector<int> _simpleTestVector;
-
-	int _levels; // pour augmenter commencer avec des pair et pair puis multiplier par 2
-};
-std::deque<int> createSimpleContainer(std::deque<std::pair<int, int>> arr);
-bool isNumber(std::string &str);
-void swap_pair(std::deque<int>::iterator it, int pair_level, std::deque<int> &container);
-static int jacobsthalValue(int n);
-int binome(int min, std::deque<std::pair<int, int>> arr);
 #endif
