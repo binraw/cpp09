@@ -13,16 +13,28 @@ BitcoinExchange::BitcoinExchange(std::string &filename)
 {
     _dataBase = "data.csv";
     _filename = filename;
-    process();
+    try
+    {
+        process();
+
+    }
+    catch(const std::exception& e)
+    {
+        std::cout << e.what() << '\n';
+    }
+    
 }
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange &other)
 {
-
+    this->_dataBase = other._dataBase;
+    this->_filename = other._filename;
+    this->_dataMap = other._dataMap;
+    
 }
-BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &other)
+BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &)
 {
-
+    return *this;
 }
 BitcoinExchange::~BitcoinExchange()
 {
@@ -36,7 +48,7 @@ void BitcoinExchange::process()
 
 }
 
-std::map<std::string, int> BitcoinExchange::initDataMap() throw()
+std::map<std::string, int> BitcoinExchange::initDataMap()
 {
     std::map<std::string, int> myMap;
     std::ifstream file("data.csv");
@@ -60,10 +72,10 @@ std::map<std::string, int> BitcoinExchange::initDataMap() throw()
     return myMap;
 }
 
-void BitcoinExchange::mainLoop() throw()
+void BitcoinExchange::mainLoop()
 {
     std::string line_file;
-    std::ifstream file_input(_filename);
+    std::ifstream file_input(_filename.c_str());
     if (!file_input.is_open()) 
         throw ErrorOpenFile();
     while(std::getline(file_input, line_file))

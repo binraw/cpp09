@@ -16,9 +16,9 @@ private:
 public:
 	BitcoinExchange();
 	BitcoinExchange(std::string &filename);
-    std::map<std::string, int> initDataMap() throw();
+    std::map<std::string, int> initDataMap();
     void process();
-    void mainLoop() throw();
+    void mainLoop();
 
     bool is_valid_date(std::string &date);
 	BitcoinExchange(const BitcoinExchange &other);
