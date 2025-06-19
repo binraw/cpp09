@@ -22,7 +22,8 @@ void RPN::calcul(std::string &str)
 {
 	std::istringstream iss(str);
 	std::string token;
-
+	try
+	{
 	while (iss >> token)
 	{
 
@@ -30,6 +31,7 @@ void RPN::calcul(std::string &str)
 		{
 			std::istringstream iss(token);
 			int number;
+			
 			iss >> number;
 			if (number > 10)
 			{
@@ -42,7 +44,7 @@ void RPN::calcul(std::string &str)
 		{
 			if (_rpn.size() < 2)
 			{
-				std::cout << "Error : not enough values in the stack." << std::endl;
+				std::cout << "Error" << std::endl;
 				return ;
 			}
 
@@ -69,12 +71,18 @@ void RPN::calcul(std::string &str)
 			else
 			{
 				std::cout << "Error : invalid operator" << std::endl;
-				return ;
-			}
+				return;
+			}  
 			_rpn.push(result);
 		}
 	}
+
 	std::cout << "Result: " << _rpn.top() << std::endl;
+	}
+	catch(const std::exception& e)
+	{
+		std::cout << "Error" << '\n';
+	}
 }
 
 bool isNumber(std::string &str)

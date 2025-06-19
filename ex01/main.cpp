@@ -13,8 +13,8 @@ int main(int argc, char **argv)
 		if (i < argc - 1)
 			words += " ";
 	}
-	std::cout << "words : " << words << std::endl;
-test.calcul(words);
+
+	test.calcul(words);
 
 	return (0);
 }  
