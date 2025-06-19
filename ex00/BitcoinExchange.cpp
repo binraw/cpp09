@@ -16,7 +16,6 @@ BitcoinExchange::BitcoinExchange(std::string &filename)
     try
     {
         process();
-
     }
     catch(const std::exception& e)
     {
@@ -48,9 +47,9 @@ void BitcoinExchange::process()
 
 }
 
-std::map<std::string, int> BitcoinExchange::initDataMap()
+std::map<std::string, float> BitcoinExchange::initDataMap()
 {
-    std::map<std::string, int> myMap;
+    std::map<std::string, float> myMap;
     std::ifstream file("data.csv");
     if (!file.is_open()) 
         throw ErrorOpenFile();
@@ -63,7 +62,7 @@ std::map<std::string, int> BitcoinExchange::initDataMap()
 
         if (std::getline(ss, key, ',') && std::getline(ss, valueStr))
         {
-            int value;
+            float value;
             std::stringstream(valueStr) >> value;
             myMap[key] = value;
         }
@@ -83,13 +82,13 @@ void BitcoinExchange::mainLoop()
         std::stringstream ssf(line_file);
         std::string key_file;
         std::string valueFile;
-        std::map<std::string, int>::iterator it_find;
+        std::map<std::string, float>::iterator it_find;
         if (std::getline(ssf, key_file, '|') && std::getline(ssf, valueFile))
         {
             float nb_btc = 0;
             std::stringstream(valueFile) >> nb_btc;
             key_file = trim(key_file);
-            std::map<std::string, int>::iterator it_find = _dataMap.lower_bound(key_file);
+            std::map<std::string, float>::iterator it_find = _dataMap.lower_bound(key_file);
             if (is_valid_date(key_file) == 0)
                 std::cout << "Error : Bad input => " << key_file << std::endl;
             else if (nb_btc < 0 || nb_btc > 1000)
@@ -101,9 +100,13 @@ void BitcoinExchange::mainLoop()
             }
             else if (it_find != _dataMap.end())
             {
-                int value_btc = it_find->second;
+                float value_btc = it_find->second;
                 std::cout << key_file << " => " << nb_btc * value_btc << std::endl;
             } 
+        }
+        else
+        {
+            std::cout << "Error : line without => date | value " << std::endl;
         }
     }
     file_input.close();

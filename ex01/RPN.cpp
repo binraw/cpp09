@@ -20,13 +20,17 @@ RPN::~RPN()
 {}
 void RPN::calcul(std::string &str)
 {
-	std::istringstream iss(str);
-	std::string token;
 	try
 	{
+	std::istringstream iss(str);
+	if (str == "")
+		return;
+	std::cout << "wesh" << std::endl;
+	std::string token;
+
 	while (iss >> token)
 	{
-
+		std::cout << "wesh" << std::endl;
 		if (isNumber(token))
 		{
 			std::istringstream iss(token);

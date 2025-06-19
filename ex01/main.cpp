@@ -6,7 +6,11 @@ int main(int argc, char **argv)
 {
 	RPN test;
 	std::string words;
-
+	if (argc <= 1)
+	{
+		std::cerr << "Error number of argument" << std::endl;
+		return -1;
+	}
 	for (int i = 1; i < argc; i++)
 	{
 		words  += argv[i];

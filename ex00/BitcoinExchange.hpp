@@ -12,11 +12,11 @@ class BitcoinExchange {
 private:
 	std::string _filename;
 	std::string _dataBase;
-    std::map<std::string, int> _dataMap;
+    std::map<std::string, float> _dataMap;
 public:
 	BitcoinExchange();
 	BitcoinExchange(std::string &filename);
-    std::map<std::string, int> initDataMap();
+    std::map<std::string, float> initDataMap();
     void process();
     void mainLoop();
 
