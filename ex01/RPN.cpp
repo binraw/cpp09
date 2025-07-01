@@ -18,19 +18,27 @@ RPN &RPN::operator=(const RPN &)
 }
 RPN::~RPN()
 {}
+
+std::string trim(const std::string& str) 
+{
+    size_t first = str.find_first_not_of(' ');
+    size_t last = str.find_last_not_of(' ');
+    return (first == std::string::npos) ? "" : str.substr(first, last - first + 1); 
+}
+
 void RPN::calcul(std::string &str)
 {
 	try
 	{
 	std::istringstream iss(str);
+	str = trim(str);
 	if (str == "")
 		return;
-	std::cout << "wesh" << std::endl;
+
 	std::string token;
 
 	while (iss >> token)
 	{
-		std::cout << "wesh" << std::endl;
 		if (isNumber(token))
 		{
 			std::istringstream iss(token);
