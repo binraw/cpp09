@@ -12,6 +12,16 @@
 #include <ctime>
 #include <exception>
 
+
+template <typename Container>
+struct CompareByBack
+{
+    bool operator()(const Container& a, const int& b) const
+    {
+        return a.back() < b;
+    }
+};
+
 template <typename ContainerOfContainer>
     void controlValueTemp(char *value, ContainerOfContainer &arr);
 
@@ -258,10 +268,7 @@ template <typename Container, typename ContainerOfContainer>
                     typename ContainerOfContainer::iterator it = startPending +  numJacob;
                     int lastElement = it->back();
                     typename ContainerOfContainer::iterator posValid = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement,
-                    [](const Container& a, const int& b) 
-                    {
-                        return a.back() < b;
-                    });
+                    CompareByBack<Container>());
                     if (posValid == mainPart.end())
                         mainPart.insert(posValid, *it);
 
@@ -275,10 +282,7 @@ template <typename Container, typename ContainerOfContainer>
                         {
                             int lastElement = iter->back();
                             typename ContainerOfContainer::iterator pos = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement,
-                            [](const Container& a, const int& b) 
-                            {
-                                return a.back() < b;
-                            });
+                            CompareByBack<Container>());
                             if(pos == mainPart.end() || *pos != *iter)
                                 mainPart.insert(pos, *iter);
                         }
@@ -294,10 +298,7 @@ template <typename Container, typename ContainerOfContainer>
                 {
                     int lastElement = it->back();
                     typename ContainerOfContainer::iterator posValid = std::lower_bound(mainPart.begin(), mainPart.end(), lastElement,
-                    [](const Container& a, const int& b) 
-                    {
-                        return a.back() < b;
-                    });
+                    CompareByBack<Container>());
                     mainPart.insert(posValid, *it);
                 }
 
@@ -435,13 +436,13 @@ template <typename Container, typename ContainerOfPair>
 
     
     private:
-    std::deque<std::pair<int, int>> _containerDequePair;
-    std::deque<std::deque<int>> _containerDequeOfDeque;
+    std::deque<std::pair<int, int> > _containerDequePair;
+    std::deque<std::deque<int> > _containerDequeOfDeque;
     std::deque<int> _containerDequeRest;
     std::deque<int> _simpleTestDeque;
 
-    std::vector<std::pair<int, int>> _containerVectorPair;
-    std::vector<std::vector<int>> _containerVectorOfVector;
+    std::vector<std::pair<int, int> > _containerVectorPair;
+    std::vector<std::vector<int> > _containerVectorOfVector;
     std::vector<int> _containerVectorRest;
     std::vector<int> _simpleTestVector;
 

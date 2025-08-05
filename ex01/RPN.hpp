@@ -12,12 +12,14 @@ public:
 	RPN(std::string &str);
 	RPN(const RPN &other);
 	RPN &operator=(const RPN &other);
+	void evaluateRPN(const std::string& input);
 	~RPN();
-	void calcul(std::string &str);
+
 private:
 	std::stack<int> _rpn;
 };
 
-bool isNumber(std::string &str);
+
+bool isNumber(const std::string& s);
 
 #endif

@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <cctype>
  
 RPN::RPN()
 {
@@ -26,86 +27,81 @@ std::string trim(const std::string& str)
     return (first == std::string::npos) ? "" : str.substr(first, last - first + 1); 
 }
 
-void RPN::calcul(std::string &str)
-{
-	try
-	{
-	std::istringstream iss(str);
-	str = trim(str);
-	if (str == "")
-		return;
 
+
+bool isNumber(const std::string& s)
+{
+    if (s.empty())
+        return false;
+
+    for (std::size_t i = 0; i < s.length(); ++i)
+    {
+        if (!std::isdigit(s[i]))
+            return false;
+    }
+    return true;
+}
+
+
+void RPN::evaluateRPN(const std::string& input)
+{
+	std::istringstream iss(input);
 	std::string token;
+	std::stack<int> rpnStack;
 
 	while (iss >> token)
 	{
 		if (isNumber(token))
 		{
-			std::istringstream iss(token);
-			int number;
-			
-			iss >> number;
+			int number = std::stoi(token);
 			if (number > 10)
 			{
-				std::cout << "Error : too large a number." << std::endl;
-				return ;
+				std::cout << "Error: too large a number." << std::endl;
+				return;
 			}
-			_rpn.push(number);
+			rpnStack.push(number);
 		}
 		else
 		{
-			if (_rpn.size() < 2)
+			if (rpnStack.size() < 2)
 			{
-				std::cout << "Error" << std::endl;
-				return ;
+				std::cout << "Error: not enough operands." << std::endl;
+				return;
 			}
 
-			int nu2 = _rpn.top();
-			_rpn.pop();
-			int nu = _rpn.top();
-			_rpn.pop();
+			int b = rpnStack.top(); rpnStack.pop();
+			int a = rpnStack.top(); rpnStack.pop();
 			int result = 0;
+
 			if (token == "+")
-				result = nu2 + nu;
-			else if (token == "*")
-				result = nu2 * nu;
+				result = a + b;
 			else if (token == "-")
-				result = nu - nu2;
+				result = a - b;
+			else if (token == "*")
+				result = a * b;
 			else if (token == "/")
 			{
-				if (nu2 == 0)
+				if (b == 0)
 				{
-					std::cout << "Error : divion by zero" << std::endl;
-					return ;
+					std::cout << "Error: division by zero." << std::endl;
+					return;
 				}
-				result = nu / nu2;
+				result = a / b;
 			}
 			else
 			{
-				std::cout << "Error : invalid operator" << std::endl;
+				std::cout << "Error: invalid operator." << std::endl;
 				return;
-			}  
-			_rpn.push(result);
+			}
+			rpnStack.push(result);
 		}
 	}
 
-	std::cout << "Result: " << _rpn.top() << std::endl;
-	}
-	catch(const std::exception& e)
+	if (rpnStack.size() != 1)
 	{
-		std::cout << "Error" << '\n';
+		std::cout << "Error: invalid expression." << std::endl;
+		return;
 	}
-}
 
-bool isNumber(std::string &str)
-{
-	if (str.empty())
-		return false;
-	for (size_t i = 0; i < str.size(); i++)
-	{
-		char c = str[i];
-		if (c < '0' || c > '9')
-			return false;
-	}
-	return true;
+	std::cout << "Result: " << rpnStack.top() << std::endl;
 }

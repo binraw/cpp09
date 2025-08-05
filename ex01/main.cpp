@@ -1,24 +1,26 @@
-
-#include <stack>
 #include "RPN.hpp"
+#include <iostream>
+#include <sstream>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-	RPN test;
-	std::string words;
-	if (argc <= 1)
-	{
-		std::cerr << "Error number of argument" << std::endl;
-		return -1;
-	}
-	for (int i = 1; i < argc; i++)
-	{
-		words  += argv[i];
-		if (i < argc - 1)
-			words += " ";
-	}
+    if (argc < 2)
+    {
+        std::cerr << "Usage: ./RPN <RPN expression>" << std::endl;
+        return 1;
+    }
 
-	test.calcul(words);
+    std::string input;
+    for (int i = 1; i < argc; ++i)
+    {
+        input += argv[i];
+        if (i != argc - 1)
+            input += " ";
+    }
 
-	return (0);
-}  
+    RPN rpn;
+    rpn.evaluateRPN(input);
+
+    return 0;
+}
+
