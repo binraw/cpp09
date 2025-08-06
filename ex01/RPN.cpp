@@ -56,7 +56,7 @@ void RPN::evaluateRPN(const std::string& input)
 			int number = std::stoi(token);
 			if (number > 10)
 			{
-				std::cout << "Error: too large a number." << std::endl;
+				std::cerr << "Error: too large a number." << std::endl;
 				return;
 			}
 			rpnStack.push(number);
@@ -65,7 +65,7 @@ void RPN::evaluateRPN(const std::string& input)
 		{
 			if (rpnStack.size() < 2)
 			{
-				std::cout << "Error: not enough operands." << std::endl;
+				std::cerr << "Error: not enough operands." << std::endl;
 				return;
 			}
 
@@ -83,14 +83,14 @@ void RPN::evaluateRPN(const std::string& input)
 			{
 				if (b == 0)
 				{
-					std::cout << "Error: division by zero." << std::endl;
+					std::cerr << "Error: division by zero." << std::endl;
 					return;
 				}
 				result = a / b;
 			}
 			else
 			{
-				std::cout << "Error: invalid operator." << std::endl;
+				std::cerr << "Error: invalid operator." << std::endl;
 				return;
 			}
 			rpnStack.push(result);
@@ -99,7 +99,7 @@ void RPN::evaluateRPN(const std::string& input)
 
 	if (rpnStack.size() != 1)
 	{
-		std::cout << "Error: invalid expression." << std::endl;
+		std::cerr << "Error: invalid expression." << std::endl;
 		return;
 	}
 
