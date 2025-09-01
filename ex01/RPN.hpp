@@ -1,9 +1,12 @@
 #ifndef RPN_HPP
 # define RPN_HPP
 
+
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <stack>
+#include <cstdlib> 
 
 class RPN
 {

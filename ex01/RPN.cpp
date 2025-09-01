@@ -1,9 +1,5 @@
 #include "RPN.hpp"
-#include <stack>
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <cctype>
+
  
 RPN::RPN()
 {
@@ -53,7 +49,7 @@ void RPN::evaluateRPN(const std::string& input)
 	{
 		if (isNumber(token))
 		{
-			int number = std::stoi(token);
+			int number = std::atoi(token.c_str());
 			if (number > 10)
 			{
 				std::cerr << "Error: too large a number." << std::endl;
