@@ -100,8 +100,31 @@ void BitcoinExchange::mainLoop()
             }
             else if (it_find != _dataMap.end())
             {
+                if (it_find->first != key_file)
+                {
+                    if (it_find == _dataMap.begin())
+                    {
+                        std::cout << "Error : No data available for date " << key_file << std::endl;
+                        continue;
+                    }
+                    --it_find;
+                }
                 float value_btc = it_find->second;
                 std::cout << key_file << " => " << nb_btc * value_btc << std::endl;
+            }
+            else
+            {
+                if (!_dataMap.empty())
+                {
+                    std::map<std::string, float>::iterator last_it = _dataMap.end();
+                    --last_it;
+                    float value_btc = last_it->second;
+                    std::cout << key_file << " => " << nb_btc * value_btc << std::endl;
+                }
+                else
+                {
+                    std::cout << "Error : No data available for date " << key_file << std::endl;
+                }
             } 
         }
         else

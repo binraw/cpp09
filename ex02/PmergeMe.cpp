@@ -33,44 +33,63 @@ PmergeMe::PmergeMe()
 
 PmergeMe::PmergeMe(int argc, char **argv)
 {
+    if (argc < 3)
+        throw std::invalid_argument("Not enough arguments");
+        
     _levels = 1;
     int levelsDeque = _levels;
     int levelsVector = _levels;
+    
     clock_t start = clock();
-    createDoublonTemp(argc, argv, _containerDequePair, _containerDequeRest);
-    _simpleTestDeque = createSimpleContainerTemp(_containerDequePair, _simpleTestDeque);
-    recursiveSortTemp(_simpleTestDeque, levelsDeque, _containerDequeOfDeque);
-    duoSortTemplate(_simpleTestDeque, _containerDequePair);
+    try {
+        createDoublonTemp(argc, argv, _containerDequePair, _containerDequeRest);
+        
+        if (_containerDequePair.empty() && _containerDequeRest.empty())
+            throw std::invalid_argument("No valid data to process");
+            
+        _simpleTestDeque = createSimpleContainerTemp(_containerDequePair, _simpleTestDeque);
+        recursiveSortTemp(_simpleTestDeque, levelsDeque, _containerDequeOfDeque);
+        duoSortTemplate(_simpleTestDeque, _containerDequePair);
 
-    if (_containerDequeRest.size() == 1)
-    {
-        std::deque<int>::iterator it = _containerDequeRest.begin();
-        std::deque<int>::iterator posValid = std::lower_bound(_simpleTestDeque.begin(), _simpleTestDeque.end(), *it);
-        _simpleTestDeque.insert(posValid, *it);
-
+        if (_containerDequeRest.size() == 1)
+        {
+            std::deque<int>::iterator it = _containerDequeRest.begin();
+            std::deque<int>::iterator posValid = std::lower_bound(_simpleTestDeque.begin(), _simpleTestDeque.end(), *it);
+            _simpleTestDeque.insert(posValid, *it);
+        }
     }
+    catch (...) {
+        throw;
+    }
+    
     clock_t end = clock();
     iter(_simpleTestDeque, printElementFinal<int>);
     double duration = double(end - start) / CLOCKS_PER_SEC;
     std::cout << "\nTime to process a range of " << _simpleTestDeque.size()  << " elements with std::deque : " << duration << " secondes." << std::endl;
 
-    clock_t startVector = clock();
-    createDoublonTemp(argc, argv, _containerVectorPair, _containerVectorRest);
-    _simpleTestVector = createSimpleContainerTemp(_containerVectorPair, _simpleTestVector);
-    recursiveSortTemp(_simpleTestVector, levelsVector,_containerVectorOfVector);
-    duoSortTemplate(_simpleTestVector, _containerVectorPair);
 
-    if (_containerVectorRest.size() == 1)
-    {
-        std::vector<int>::iterator it = _containerVectorRest.begin();
-        std::vector<int>::iterator posValid = std::lower_bound(_simpleTestVector.begin(), _simpleTestVector.end(), *it);
-        _simpleTestVector.insert(posValid, *it);
+    clock_t startVector = clock();
+    try {
+        createDoublonTemp(argc, argv, _containerVectorPair, _containerVectorRest);
+        _simpleTestVector = createSimpleContainerTemp(_containerVectorPair, _simpleTestVector);
+        recursiveSortTemp(_simpleTestVector, levelsVector,_containerVectorOfVector);
+        duoSortTemplate(_simpleTestVector, _containerVectorPair);
+
+        if (_containerVectorRest.size() == 1)
+        {
+            std::vector<int>::iterator it = _containerVectorRest.begin();
+            std::vector<int>::iterator posValid = std::lower_bound(_simpleTestVector.begin(), _simpleTestVector.end(), *it);
+            _simpleTestVector.insert(posValid, *it);
+        }
     }
+    catch (...) {
+        throw; 
+    }
+    
     clock_t endVector = clock();
     iter(_simpleTestVector, printElementFinal<int>);
     double timeVector = double(endVector - startVector) / CLOCKS_PER_SEC;
     std::cout << "\nTime to process a range of " << _simpleTestVector.size()  << " elements with std::vector : " << timeVector << " secondes." << std::endl;
-
 }
 
 PmergeMe::PmergeMe(const PmergeMe &other)
@@ -89,11 +108,20 @@ PmergeMe::~PmergeMe()
 }
 
 
-bool isNumber(std::string &str)
+bool isNumber(const std::string &str)
 {
 	if (str.empty())
 		return false;
-	for (size_t i = 0; i < str.size(); i++)
+	
+	size_t start = 0;
+	if (str[0] == '+' || str[0] == '-')
+	{
+		if (str.size() == 1)
+			return false;
+		start = 1;
+	}
+	
+	for (size_t i = start; i < str.size(); i++)
 	{
 		char c = str[i];
 		if (c < '0' || c > '9')

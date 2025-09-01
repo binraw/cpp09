@@ -11,6 +11,8 @@
 #include <cmath>
 #include <ctime>
 #include <exception>
+#include <climits>
+#include <cstdlib>
 
 
 template <typename Container>
@@ -28,7 +30,7 @@ template <typename ContainerOfContainer>
 template <typename Container, typename ContainerOfContainer>
     void recursiveInsertWithContainerTemp(Container &arr, int actualLevels, ContainerOfContainer &container);
 
-bool isNumber(std::string &str);
+bool isNumber(const std::string &str);
 
 static int jacobsthalValue(int n);
 
@@ -111,6 +113,11 @@ template <typename Container, typename ResultContainer>
 template <typename ContainerOfContainer, typename Container>
     void createDoublonTemp(int argc, char **argv, ContainerOfContainer &arr, Container &arrRest)
     {
+        if (argc < 3)
+        {
+            throw std::invalid_argument("Not enough arguments");
+        }
+
         if ((argc % 2) == 0)
         {
             int i = 1;
@@ -452,26 +459,36 @@ template <typename Container, typename ContainerOfPair>
     template <typename ContainerOfContainer>
     void controlValueTemp(char *value, ContainerOfContainer &arr)
     {
-        int result;
+        if (!value)
+            throw std::invalid_argument("Null pointer");
+            
+        std::string strValue(value);
+        
+        if (!isNumber(strValue))
+            throw std::invalid_argument("Invalid number format");
+        
+        long long result;
         try {
-            result = std::atoi(value);
+            result = std::strtoll(value, NULL, 10);
         }
-        catch (std::invalid_argument const& ex){
-            throw  PmergeMe::ErrorArgs();
+        catch (...) {
+            throw std::invalid_argument("Invalid number format");
         }
-        catch (std::out_of_range const& ex){
-            throw   PmergeMe::ErrorNull();
-        }
-        if (result)
+        
+        if (result > INT_MAX || result < INT_MIN)
+            throw std::out_of_range("Number out of range");
+            
+        if (result < 0)
+            throw std::invalid_argument("Negative numbers not allowed");
+            
+        int intResult = static_cast<int>(result);
+        
+
+        for (typename ContainerOfContainer::iterator it = arr.begin(); it != arr.end(); it++)
         {
-            for (typename ContainerOfContainer::iterator it = arr.begin(); it != arr.end(); it++)
-            {
-                if (it->first == result || it->second == result)
-                    throw  PmergeMe::ErrorDouble();
-            }
+            if (it->first == intResult || it->second == intResult)
+                throw std::invalid_argument("Duplicate values");
         }
-        else
-            throw PmergeMe::ErrorNull();
     }
 
 
